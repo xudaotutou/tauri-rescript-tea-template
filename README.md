@@ -1,9 +1,6 @@
-# Tauri + ReScript + React
+# Tauri + ReScript + ReScript TEA
 
-This template should help get you started developing with Tauri, ReScript, and React in Vite.
-
-![App Screenshot](./Screenshot-light.png#gh-light-mode-only)
-![App Screenshot](./Screenshot-dark.png#gh-dark-mode-only)
+This template should help get you started developing with Tauri, ReScript, and ReScript TEA in Vite.
 
 ## Recommended IDE Setup
 

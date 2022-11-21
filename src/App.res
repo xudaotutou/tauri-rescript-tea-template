@@ -1,66 +1,52 @@
-@module("./assets/react.svg") external reactLogo: string = "default"
+// @module("./assets/react.svg") external reactLogo: string = "default"
 %%raw(`import './App.css'`)
 
-open Promise
+open Tea.App
+open Tea.Html
 
-@react.component
-let make = () => {
-  let (greetMsg, setGreetMsg) = React.useState(() => "")
-  let (name, setName) = React.useState(() => "")
+type msg =
+  | Increment // (* This will be our message to increment the counter *)
+  | Decrement // (* This will be our message to decrement the counter *)
+  | Reset // (* This will be our message to reset the counter to 0 *)
+  | Set(int) // (* This will be out message to set the counter to a specific value *)
 
-  let greet = () => {
-    Tauri.invoke(~cmd="greet", ~payload={"name": name})
-    ->then(msg => {
-      setGreetMsg(msg)
-      resolve()
-    })
-    ->ignore
+type model = int
+
+let init = () => 42
+
+let update = (model, msg) => {
+  switch msg {
+  | Increment => model + 1
+  | Decrement => model - 1
+  | Reset => init()
+  | Set(x) => x
   }
-
-  <div className="container">
-    <h1> {"Welcome to Tauri!"->React.string} </h1>
-    <div className="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://rescript-lang.org" target="_blank">
-        <img src="/rescript.png" className="logo rescript" alt="ReScript logo" />
-      </a>
-      <a href="https://reactjs.org" target="_blank">
-        <img src={reactLogo} className="logo react" alt="React logo" />
-      </a>
-    </div>
-    
-    <p> {"Click on the Tauri, Vite, ReScript, and React logos to learn more."->React.string} </p>
-  
-    <p>
-        {"Recommended IDE setup: "->React.string}
-        <a href="https://code.visualstudio.com/" target="_blank">{"VS Code"->React.string}</a>
-        {" + "->React.string}
-        <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank">{"Tauri"->React.string}</a>
-        {" + "->React.string}
-        <a href="https://github.com/rust-lang/rust-analyzer" target="_blank">{"rust-analyzer"->React.string}</a>
-        {" + "->React.string}
-        <a href="https://github.com/rescript-lang/rescript-vscode" target="_blank">{"ReScript"->React.string}</a>
-    </p>
-  
-    <div className="row">
-      <div>
-        <input
-          id="greet-input"
-          onChange={evt => {
-            ReactEvent.Form.preventDefault(evt)
-            let value = ReactEvent.Form.target(evt)["value"]
-            setName(_prev => value)
-          }}
-          placeholder="Enter a name..."
-        />
-        <button onClick={_evt => greet()}> {"Greet"->React.string} </button>
-      </div>
-    </div>
-    <p> {greetMsg->React.string} </p>
-  </div>
 }
+
+let viewButton = (~title, ~disabled=false, ~msg, ()) =>
+  button(list{Events.onClick(msg), Attributes.disabled(disabled)}, list{text(title)})
+
+let empty = list{}
+
+let view = model =>
+  div(
+    empty,
+    list{
+      span(list{Attributes.class("count")}, list{text(string_of_int(model))}),
+      div(
+        list{Attributes.class("button-list")},
+        list{
+          viewButton(~title="Increment", ~msg=Increment, ()),
+          viewButton(~title="Decrement", ~msg=Decrement, ()),
+          viewButton(~title="Set to 42", ~disabled=model == 42, ~msg=Set(42), ()),
+          model != 42 ? viewButton(~title="Reset", ~msg=Reset, ()) : noNode,
+        },
+      ),
+    },
+  )
+
+let main = beginnerProgram({
+  model: init(),
+  update,
+  view,
+})

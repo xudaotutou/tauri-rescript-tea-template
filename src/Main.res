@@ -1,11 +1,9 @@
-%%raw(`import './style.css'`)
+// @module("./style.css") external style: unit = "default"
+// open Webapi.Dom
 
-let container = Webapi.Dom.Document.getElementById(Webapi.Dom.document, "root")
+// let app = document->Document.getElementById("root")
 
-switch container {
-| Some(container) => { 
-    let root = ReactDOM.Client.createRoot(container)
-    root -> ReactDOM.Client.Root.render(<App />)
-}
-| None => () // do nothing
-}
+// switch app {
+// | Some(app) => App.main(app)
+// | None => ()
+// }

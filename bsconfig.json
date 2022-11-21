@@ -1,5 +1,5 @@
 {
-  "name": "vite-react-rescript-tauri",
+  "name": "vite-rescript-tea-tauri",
   "sources": [
     {
       "dir": "src",
@@ -13,11 +13,8 @@
     }
   ],
   "suffix": ".bs.js",
-  "reason": {
-    "react-jsx": 3
-  },
   "bs-dependencies": [
-    "@rescript/react",
+    "rescript-tea",
     "@ryyppy/rescript-promise",
     "rescript-webapi"
   ]
